@@ -21,7 +21,7 @@
     async function callBackend() {
       document.getElementById('response').innerText = "Contacting backend...";
       try {
-        const res = await fetch('https://softai-softagents-backend.onrender.com');
+        const res = await fetch('https://softai-softagents-backend.onrender.com/');
         const text = await res.text();
         document.getElementById('response').innerText = "Backend says: " + text;
       } catch (err) {
