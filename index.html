@@ -1,31 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SoftAI - Lily</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; padding: 2em; }
-    button { padding: 1em 2em; font-size: 16px; margin-top: 1em; }
-    #response { margin-top: 2em; font-weight: bold; color: green; }
-  </style>
 </head>
 <body>
   <h1>Welcome to SoftAI - Lily</h1>
   <p>This is the frontend interface, live!</p>
 
-  <button onclick="callBackend()">Call SoftAI Backend</button>
-  <div id="response">Waiting for response...</div>
+  <input type="text" id="userInput" placeholder="Ask SoftAI Lily anything..." style="width: 300px;" />
+  <button onclick="callBackend()">Send</button>
+
+  <p id="response">Waiting for response...</p>
 
   <script>
     async function callBackend() {
-      document.getElementById('response').innerText = "Contacting backend...";
+      const question = document.getElementById('userInput').value;
+      document.getElementById('response').innerText = 'Thinking...';
+
       try {
-        const res = await fetch('https://softai-softagents-backend.onrender.com/');
-        const text = await res.text();
-        document.getElementById('response').innerText = "Backend says: " + text;
-      } catch (err) {
-        document.getElementById('response').innerText = "Error: " + err.message;
+        const response = await fetch('https://softai-softagents-backend.onrender.com/ask', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ question })
+        });
+        const data = await response.json();
+        document.getElementById('response').innerText = 'Lily says: ' + data.answer;
+      } catch (error) {
+        document.getElementById('response').innerText = 'Error: ' + error.message;
       }
     }
   </script>
