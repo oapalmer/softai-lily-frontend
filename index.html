@@ -2,11 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SoftAI Lily</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SoftAI - Lily</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2em; }
+    button { padding: 1em 2em; font-size: 16px; margin-top: 1em; }
+    #response { margin-top: 2em; font-weight: bold; color: green; }
+  </style>
 </head>
 <body>
   <h1>Welcome to SoftAI - Lily</h1>
   <p>This is the frontend interface, live!</p>
+
+  <button onclick="callBackend()">Call SoftAI Backend</button>
+  <div id="response">Waiting for response...</div>
+
+  <script>
+    async function callBackend() {
+      document.getElementById('response').innerText = "Contacting backend...";
+      try {
+        const res = await fetch('https://softai-softagents-backend.onrender.com');
+        const text = await res.text();
+        document.getElementById('response').innerText = "Backend says: " + text;
+      } catch (err) {
+        document.getElementById('response').innerText = "Error: " + err.message;
+      }
+    }
+  </script>
 </body>
 </html>
