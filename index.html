@@ -23,7 +23,7 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ prompt: question }) // Updated key name to match backend
+          body: JSON.stringify({ prompt: }) // Updated key name to match backend
         });
 
         const data = await response.json();
