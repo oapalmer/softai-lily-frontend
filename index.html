@@ -23,10 +23,12 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ question })
+          body: JSON.stringify({ prompt: question }) // Updated key name to match backend
         });
+
         const data = await response.json();
-        document.getElementById('response').innerText = 'Lily says: ' + data.answer;
+        document.getElementById('response').innerText = 'Lily says: ' + data.reply; // Updated response key
+
       } catch (error) {
         document.getElementById('response').innerText = 'Error: ' + error.message;
       }
