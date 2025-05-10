@@ -1,64 +1,119 @@
-<!DOCTYPE html>  
-<html>  
-<head>  
-  <title>Lily Chatbot</title>  
-  <style>  
-    /* Your existing CSS here */  
-  </style>  
-</head>  
-<body>  
-  <div class="chat-container">  
-    <div id="chat-messages"></div>  
-    <div id="input-container">  
-      <input type="text" id="user-input" placeholder="Type your message...">  
-      <button onclick="sendMessage()">Send</button>  
-    </div>  
-  </div>  
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lily - Your Affordable African AI Assistant</title>
+  <style>
+    /* African-inspired colors */
+    body {
+      background: #f0f2f5;
+      font-family: 'Arial', sans-serif;
+    }
+    .chat-container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    #chat-messages {
+      height: 400px;
+      padding: 15px;
+      overflow-y: auto;
+      border-bottom: 1px solid #ddd;
+    }
+    .message {
+      margin: 10px 0;
+      padding: 10px 15px;
+      border-radius: 15px;
+      max-width: 70%;
+    }
+    .user-message {
+      background: #007bff;
+      color: white;
+      margin-left: auto;
+    }
+    .bot-message {
+      background: #e9ecef;
+      color: #333;
+    }
+    #input-container {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+    }
+    #user-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div id="chat-messages"></div>
+    <div id="input-container">
+      <input type="text" id="user-input" placeholder="Type your message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
 
-  <script>  
-    const API_ENDPOINT = "https://softai-softagents-backend.onrender.com/chat";  
+  <script>
+    // African client ID system (localStorage-based)
+    const CLIENT_ID = localStorage.getItem('lilyClientId') || 
+      `african-user-${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('lilyClientId', CLIENT_ID);
 
-    function appendMessage(message, isUser = false) {  
-      const chatMessages = document.getElementById("chat-messages");  
-      const messageDiv = document.createElement("div");  
-      messageDiv.className = isUser ? "user-message" : "bot-message";  
-      messageDiv.textContent = message;  
-      chatMessages.appendChild(messageDiv);  
-      chatMessages.scrollTop = chatMessages.scrollHeight;  
-    }  
+    const API_ENDPOINT = "https://softai-softagents-backend.onrender.com/chat";
 
-    async function sendMessage() {  
-      const userInput = document.getElementById("user-input");  
-      const message = userInput.value.trim();  
-      if (!message) return;  
+    function appendMessage(message, isUser = false) {
+      const chatMessages = document.getElementById("chat-messages");
+      const messageDiv = document.createElement("div");
+      messageDiv.className = isUser ? "user-message" : "bot-message";
+      messageDiv.textContent = message;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 
-      appendMessage(message, true);  
-      userInput.value = "";  
+    async function sendMessage() {
+      const userInput = document.getElementById("user-input");
+      const message = userInput.value.trim();
+      if (!message) return;
 
-      try {  
-        const response = await fetch(API_ENDPOINT, {  
-          method: "POST",  
-          headers: { "Content-Type": "application/json" },  
-          body: JSON.stringify({ message })  
-        });  
+      appendMessage(message, true);
+      userInput.value = "";
+      
+      try {
+        appendMessage("🌍 Lily is thinking...", false);
+        
+        const response = await fetch(API_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, clientId: CLIENT_ID })
+        });
 
-        if (!response.ok) {  
-          throw new Error(`HTTP error: ${response.status}`);  
-        }  
+        const data = await response.json();
+        document.getElementById("chat-messages").lastChild.remove(); // Remove loading message
+        appendMessage(data.response);
 
-        const data = await response.json();  
-        appendMessage(data.response);  
+      } catch (error) {
+        document.getElementById("chat-messages").lastChild.remove();
+        appendMessage("⚠️ Network error - try again!", false);
+      }
+    }
 
-      } catch (error) {  
-        appendMessage(`Error: ${error.message}`);  
-        console.error("Error:", error);  
-      }  
-    }  
-
-    // Allow Enter key  
-    document.getElementById("user-input").addEventListener("keypress", (e) => {  
-      if (e.key === "Enter") sendMessage();  
-    });  
-  </script>  
-</body>  
-</html>  
+    // Enter key support
+    document.getElementById("user-input").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
